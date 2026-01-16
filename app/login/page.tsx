@@ -1,8 +1,16 @@
 import Image from "next/image"
 import { Button } from "../_components/ui/button"
 import { LogInIcon } from "lucide-react"
+import { SignInButton } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
 
-const LoginPage = () => {
+const LoginPage = async () => {
+    const {userId} = await auth();
+
+    if (userId) {
+        redirect("/");
+    }
     return (
         <div className="grid grid-cols-2 h-full">
             {/* ESQUERDA*/}
@@ -11,10 +19,12 @@ const LoginPage = () => {
                 <h1 className="mb-3 text-4xl font-bold">Bem-vindo</h1>
                 <p className="text-muted-foreground mb-8">A FinHub.ia é uma plataforma de gestão financeira com inteligência artificial que monitora suas movimentações e gera insights personalizados para facilitar o controle do seu orçamento.
                 </p>
-                <Button variant={"outline"}>
-                    <LogInIcon className="mr-2" />
-                    Fazer login ou Criar conta
-                </Button>
+                <SignInButton>
+                    <Button variant={"outline"}>
+                        <LogInIcon className="mr-2" />
+                        Fazer login ou Criar conta
+                    </Button>
+                </SignInButton>
             </div>
 
             {/* DIREITA*/}
