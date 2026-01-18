@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   title: "FinHub.IA",
   description:
     "plataforma de gestão financeira com inteligência artificial que monitora suas movimentações e gera insights personalizados para facilitar o controle do seu orçamento.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
