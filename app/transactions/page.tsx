@@ -4,6 +4,8 @@ import { TransactionColumns } from "./_columns";
 import UpsertTransactionButton from "../_components/add-transaction-button";
 import { Transaction } from "@prisma/client";
 import Navbar from "../_components/navbar";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 // Type for serialized transactions (Decimal converted to number)
 type SerializedTransaction = Omit<Transaction, "amount"> & {
@@ -11,7 +13,15 @@ type SerializedTransaction = Omit<Transaction, "amount"> & {
 };
 
 const TransactionsPage = async () => {
-  const transactions = await db.transaction.findMany({});
+  const { userId } = await auth();
+  if (!userId) {
+    redirect("/login");
+  }
+  const transactions = await db.transaction.findMany({
+    where: {
+      userId,
+    },
+  });
 
   // Convert Decimal to number for Client Component serialization
   const serializedTransactions: SerializedTransaction[] = transactions.map(
