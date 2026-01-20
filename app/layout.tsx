@@ -31,7 +31,11 @@ export default function RootLayout({
             baseTheme: dark,
           }}
         >
-          {children}
+          <div className="flex h-full flex-col overflow-auto">
+            {" "}
+            {/* mudar o overflow-hidden para overflow-auto para permitir scroll na tela */}
+            {children}
+          </div>
           <Toaster />
         </ClerkProvider>
       </body>
