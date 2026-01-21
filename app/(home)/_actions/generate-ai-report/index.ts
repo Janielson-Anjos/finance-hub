@@ -3,6 +3,10 @@
 import { db } from "@/app/_lib/prisma";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { GoogleGenAI } from "@google/genai";
+import {
+  TRANSACTION_CATEGORY_LABELS,
+  TRANSACTION_TYPE_LABELS,
+} from "@/app/_constants/transaction";
 import { GenerateAiReportSchema, generateAiReportSchema } from "./schema";
 
 export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
@@ -22,24 +26,48 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
   const genAI = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
   });
-  // pegar as transações do mês recebido
+  const year = new Date().getFullYear();
+  const monthIndex = Number(month) - 1;
+  const start = new Date(year, monthIndex, 1);
+  const end = new Date(year, monthIndex + 1, 1);
+
+  // pegar as transações do mês recebido (do usuário logado)
   const transactions = await db.transaction.findMany({
     where: {
+      userId,
       date: {
-        gte: new Date(`2026-${month}-01`),
-        lt: new Date(`2026-${month}-31`),
+        gte: start,
+        lt: end,
       },
     },
   });
-  // mandar as transações para o ChatGPT e pedir para ele gerar um relatório com insights
-  const content = `Gere um relatório com insights sobre as minhas finanças, com dicas e orientações de como melhorar minha vida financeira. As transações estão divididas por ponto e vírgula. A estrutura de cada uma é {DATA}-{TIPO}-{VALOR}-{CATEGORIA}. São elas:
-  ${transactions
-    .map(
-      (transaction) =>
-        `${transaction.date.toLocaleDateString("pt-BR")}-R$${transaction.amount}-${transaction.type}-${transaction.category}`,
-    )
-    .join(";")}`;
-  const prompt = `Você é um especialista em gestão e organização de finanças pessoais. Você ajuda as pessoas a organizarem melhor as suas finanças.\n\n${content}`;
+
+  if (transactions.length === 0) {
+    return `Não encontrei transações para ${month}/${year}.`;
+  }
+
+  const transactionsText = transactions
+    .map((transaction) => {
+      const date = new Date(transaction.date).toISOString().slice(0, 10); // YYYY-MM-DD
+      const type = TRANSACTION_TYPE_LABELS[transaction.type];
+      const category = TRANSACTION_CATEGORY_LABELS[transaction.category];
+      const amount = Number(transaction.amount).toFixed(2);
+      return `${date}-${type}-${amount}-${category}`;
+    })
+    .join(";");
+
+  const prompt = [
+    "Você é um especialista em gestão e organização de finanças pessoais.",
+    "Responda sempre em português (pt-BR).",
+    "Não peça para eu fornecer transações — elas já estão abaixo.",
+    "Gere um relatório com insights e dicas práticas, com seções e bullets, usando as transações informadas.",
+    "",
+    "As transações estão divididas por ponto e vírgula e cada uma segue exatamente:",
+    "{DATA}-{TIPO}-{VALOR}-{CATEGORIA}",
+    "",
+    "Transações:",
+    transactionsText,
+  ].join("\n");
   try {
     const response = await genAI.models.generateContent({
       model: "gemini-2.5-flash-lite",
@@ -55,6 +83,15 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
         : typeof error === "string"
           ? error
           : "Gemini request failed";
+    if (
+      message.includes("429") ||
+      message.toLowerCase().includes("resource_exhausted") ||
+      message.toLowerCase().includes("quota")
+    ) {
+      throw new Error(
+        "Limite/Quota da Gemini API excedida (ou quota=0). Verifique billing e quotas do seu projeto na Google AI.",
+      );
+    }
     // Se o modelo estiver indisponível/overloaded, retorne um erro mais claro
     if (
       message.includes("503") ||

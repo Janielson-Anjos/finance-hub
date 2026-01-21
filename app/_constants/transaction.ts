@@ -26,6 +26,12 @@ export const TRANSACTION_CATEGORY_LABELS = {
   OTHER: "Outro",
 };
 
+export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
+  [TransactionType.EXPENSE]: "Despesa",
+  [TransactionType.DEPOSIT]: "Depósito",
+  [TransactionType.INVESTMENT]: "Investimento",
+};
+
 export const TRANSACTION_PAYMENT_METHOD_LABELS = {
   CREDIT_CARD: "Cartão de crédito",
   DEBIT_CARD: "Cartão de débito",
