@@ -23,6 +23,9 @@ const TransactionsPage = async () => {
     where: {
       userId,
     },
+    orderBy: {
+      date: "desc",
+    },
   });
 
   // Convert Decimal to number for Client Component serialization
