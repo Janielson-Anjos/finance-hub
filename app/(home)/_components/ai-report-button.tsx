@@ -45,7 +45,13 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
           <BotIcon className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[600px]">
+      <DialogContent
+        className={
+          report
+            ? "flex h-[95vh] max-h-[95vh] max-w-2xl flex-col"
+            : "max-w-[600px]"
+        }
+      >
         {hasPremiumPlan ? (
           <>
             <DialogHeader>
@@ -55,8 +61,16 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
                 para facilitar o controle financeiro.
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="prose max-h-[450px] text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white">
-              <Markdown>{report}</Markdown>
+            <ScrollArea
+              className={
+                report
+                  ? "prose flex-1 text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white"
+                  : "prose max-h-[450px] text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white"
+              }
+            >
+              <div className={report ? "pr-4" : ""}>
+                <Markdown>{report}</Markdown>
+              </div>
             </ScrollArea>
             <DialogFooter>
               <DialogClose asChild>
