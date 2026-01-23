@@ -11,12 +11,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
-import { BotIcon, Loader2Icon } from "lucide-react";
+import { BotIcon, Loader2Icon, DownloadIcon } from "lucide-react";
 import React, { useState } from "react";
 import { generateAiReport } from "../_actions/generate-ai-report";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import Markdown from "react-markdown";
 import Link from "next/link";
+import { exportReportToPdf } from "@/app/_utils/pdf-export";
+import { toast } from "sonner";
 
 interface AiReportButtonProps {
   month: string;
@@ -26,6 +28,8 @@ interface AiReportButtonProps {
 const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
   const [report, setReport] = useState<string | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
+
   const handleGenerateReportClick = async () => {
     try {
       setReportLoading(true);
@@ -33,8 +37,27 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
       setReport(aiReport ?? null);
     } catch (error) {
       console.error(error);
+      toast.error("Erro ao gerar relatório");
     } finally {
       setReportLoading(false);
+    }
+  };
+
+  const handleExportPdf = () => {
+    if (!report) return;
+
+    try {
+      setExportingPdf(true);
+      exportReportToPdf({
+        content: report,
+        month,
+      });
+      toast.success("PDF exportado com sucesso!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao exportar PDF");
+    } finally {
+      setExportingPdf(false);
     }
   };
   return (
@@ -76,6 +99,25 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
               <DialogClose asChild>
                 <Button variant="ghost">Cancelar</Button>
               </DialogClose>
+              {report && (
+                <Button
+                  onClick={handleExportPdf}
+                  disabled={exportingPdf}
+                  variant="outline"
+                >
+                  {exportingPdf ? (
+                    <>
+                      <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                      Exportando...
+                    </>
+                  ) : (
+                    <>
+                      <DownloadIcon className="mr-2 h-4 w-4" />
+                      Exportar PDF
+                    </>
+                  )}
+                </Button>
+              )}
               <Button
                 onClick={handleGenerateReportClick}
                 disabled={reportLoading}
