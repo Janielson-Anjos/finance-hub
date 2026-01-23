@@ -3,13 +3,12 @@
 import { Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import TransactionTypeBadge from "../_components/type-badge";
-import { Button } from "@/app/_components/ui/button";
 import {
   TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_PAYMENT_METHOD_LABELS,
 } from "@/app/_constants/transaction";
-import { Trash2Icon } from "lucide-react";
 import EditTransactionButton from "../_components/edit-transaction-button";
+import DeleteTransactionButton from "../_components/delete-transaction-button";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -64,9 +63,7 @@ export const TransactionColumns: ColumnDef<Transaction>[] = [
       return (
         <div className="space-x-1">
           <EditTransactionButton transaction={transaction} />
-          <Button variant="ghost" size="icon" className="text-muted-foreground">
-            <Trash2Icon />
-          </Button>
+          <DeleteTransactionButton transactionId={transaction.id} />
         </div>
       );
     },
