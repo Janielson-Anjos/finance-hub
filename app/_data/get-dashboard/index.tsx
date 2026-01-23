@@ -3,6 +3,7 @@ import { TransactionType } from "@prisma/client";
 import {
   TotalExpensesPerCategory,
   TransactionPercentagePerType,
+  SerializedTransaction,
 } from "./types";
 import { auth } from "@clerk/nextjs/server";
 
@@ -99,10 +100,11 @@ export const getDashboard = async (month: string) => {
   });
 
   // Converter Decimal para number para serialização
-  const serializedLastTransactions = lastTransactions.map((transaction) => ({
-    ...transaction,
-    amount: Number(transaction.amount),
-  }));
+  const serializedLastTransactions: SerializedTransaction[] =
+    lastTransactions.map((transaction) => ({
+      ...transaction,
+      amount: Number(transaction.amount),
+    }));
 
   return {
     depositsTotal,

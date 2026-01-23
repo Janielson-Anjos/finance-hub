@@ -7,16 +7,17 @@ import {
   TRANSACTION_PAYMENT_METHOD_LABELS,
 } from "@/app/_constants/transaction";
 import { formatCurrency } from "@/app/_utils/currency";
-import { Transaction, TransactionType } from "@prisma/client";
+import { TransactionType } from "@prisma/client";
+import { SerializedTransaction } from "@/app/_data/get-dashboard/types";
 import Image from "next/image";
 import Link from "next/link";
 
 interface LastTransactionsProps {
-  lastTransactions: Transaction[];
+  lastTransactions: SerializedTransaction[];
 }
 
 const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
-  const getAmountColor = (transaction: Transaction) => {
+  const getAmountColor = (transaction: SerializedTransaction) => {
     if (transaction.type === TransactionType.EXPENSE) {
       return "text-danger";
     }
@@ -25,7 +26,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
     }
     return "text-white";
   };
-  const getAmountPrefix = (transaction: Transaction) => {
+  const getAmountPrefix = (transaction: SerializedTransaction) => {
     if (transaction.type === TransactionType.DEPOSIT) {
       return "+";
     }
@@ -71,7 +72,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
             </div>
             <p className={`text-sm font-bold ${getAmountColor(transaction)}`}>
               {getAmountPrefix(transaction)}{" "}
-              {formatCurrency(Number(transaction.amount))}
+              {formatCurrency(transaction.amount)}
             </p>
           </div>
         ))}
