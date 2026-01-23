@@ -47,7 +47,9 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
             className="flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-white bg-opacity-[3%] p-3">
+              <div
+                className={`rounded-lg bg-white bg-opacity-[3%] p-3 ${getAmountColor(transaction)}`}
+              >
                 <Image
                   src={
                     TRANSACTION_PAYMENT_METHOD_ICONS[transaction.paymentMethod]
@@ -57,6 +59,14 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
                   }
                   width={20}
                   height={20}
+                  style={{
+                    filter:
+                      transaction.type === TransactionType.EXPENSE
+                        ? "brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(7481%) hue-rotate(352deg) brightness(96%) contrast(96%)"
+                        : transaction.type === TransactionType.DEPOSIT
+                          ? "brightness(0) saturate(100%) invert(60%) sepia(95%) saturate(400%) hue-rotate(60deg) brightness(95%) contrast(85%)"
+                          : "brightness(0) invert(1)",
+                  }}
                 />
               </div>
               <div>
