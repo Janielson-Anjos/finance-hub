@@ -98,6 +98,12 @@ export const getDashboard = async (month: string) => {
     take: 15,
   });
 
+  // Converter Decimal para number para serialização
+  const serializedLastTransactions = lastTransactions.map((transaction) => ({
+    ...transaction,
+    amount: Number(transaction.amount),
+  }));
+
   return {
     depositsTotal,
     investimentsTotal,
@@ -105,6 +111,6 @@ export const getDashboard = async (month: string) => {
     balance,
     typesPercentage,
     TotalExpensesPerCategory,
-    lastTransactions,
+    lastTransactions: serializedLastTransactions,
   };
 };
