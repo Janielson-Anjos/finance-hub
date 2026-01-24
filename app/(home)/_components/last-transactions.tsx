@@ -34,21 +34,25 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
   };
   return (
     <ScrollArea className="rounded-md border-2 border-white/5">
-      <CardHeader className="flex-row items-center justify-between">
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <CardTitle className="font-bold">Últimas transações</CardTitle>
-        <Button variant="outline" className="rounded-full font-bold" asChild>
+        <Button
+          variant="outline"
+          className="w-full rounded-full font-bold sm:w-auto"
+          asChild
+        >
           <Link href="/transactions">Ver mais</Link>
         </Button>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 sm:space-y-6">
         {lastTransactions.map((transaction) => (
           <div
             key={transaction.id}
-            className="flex items-center justify-between"
+            className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-center gap-3">
               <div
-                className={`rounded-lg bg-white bg-opacity-[3%] p-3 ${getAmountColor(transaction)}`}
+                className={`rounded-lg bg-white bg-opacity-[3%] p-2 sm:p-3 ${getAmountColor(transaction)}`}
               >
                 <Image
                   src={
@@ -71,7 +75,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
               </div>
               <div>
                 <p className="text-sm font-bold">{transaction.name}</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground sm:text-sm">
                   {new Date(transaction.date).toLocaleDateString("pt-BR", {
                     day: "2-digit",
                     month: "2-digit",

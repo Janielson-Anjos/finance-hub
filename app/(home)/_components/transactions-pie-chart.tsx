@@ -111,11 +111,11 @@ const TransactionsPieChart = ({
 
   return (
     <Card className="flex flex-col border-white/10 p-3">
-      <ScrollArea className="h-full max-h-[500px]">
+      <ScrollArea className="h-full max-h-[400px] sm:max-h-[500px]">
         <CardContent className="flex-1 pb-0">
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[250px]"
+            className="mx-auto aspect-square max-h-[200px] sm:max-h-[250px]"
           >
             <PieChart>
               <ChartTooltip

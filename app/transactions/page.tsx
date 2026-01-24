@@ -40,8 +40,8 @@ const TransactionsPage = async () => {
   return (
     <>
       <Navbar />
-      <div className="flex h-[calc(100vh-90px)] flex-col space-y-6 p-6">
-        <div className="flex w-full items-center justify-between">
+      <div className="flex h-[calc(100vh-90px)] flex-col space-y-4 p-3 sm:space-y-6 sm:p-6">
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-2xl font-bold">Transações</h1>
           <UpsertTransactionButton
             userCanAddTransaction={userCanAddTransaction}

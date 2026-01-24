@@ -149,7 +149,7 @@ const UpsertTransactionDialog = ({
       }}
     >
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="flex h-[95vh] max-h-[95vh] flex-col">
+      <DialogContent className="flex h-[95vh] max-h-[95vh] w-[95vw] max-w-lg flex-col">
         <DialogHeader>
           <DialogTitle>
             {isUpdate ? "Atualizar Transação" : "Adicionar Transação"}
@@ -163,7 +163,7 @@ const UpsertTransactionDialog = ({
             <form
               id="transaction-form"
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-8 pr-4"
+              className="space-y-6 pr-2 sm:space-y-8 sm:pr-4"
             >
               <FormField
                 control={form.control}

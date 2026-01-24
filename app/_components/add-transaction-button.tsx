@@ -29,9 +29,11 @@ const UpsertTransactionButton = ({
               className="rounded-full font-bold"
               onClick={() => setDialogIsOpen(true)}
               disabled={!userCanAddTransaction}
+              size="sm"
             >
-              Adicionar Transação
-              <ArrowDownUpIcon />
+              <span className="hidden sm:inline">Adicionar Transação</span>
+              <span className="sm:hidden">Adicionar</span>
+              <ArrowDownUpIcon className="ml-2 h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
